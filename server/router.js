@@ -1,6 +1,6 @@
 import UsersModel from "./models/users.model";
 import _ from "lodash";
-import config from "./config";
+import * as config from "./config";
 import bcrypt from "bcryptjs";
 import express from "express";
 import passport from "passport";
@@ -25,6 +25,8 @@ function createToken(body) {
     );
 }
 
+console.log(config);
+
 export default function (app) {
     app.use('/assets', express.static('./client/public'));
 
@@ -36,7 +38,9 @@ export default function (app) {
         try {
             let user = await UsersModel.findOne({username: {$regex: _.escapeRegExp(req.body.username), $options: "i"}}).lean().exec();
             
-            if (user != void(0) || bcrypt.compareSync(req.body.password, user.password)) {
+
+            console.log(config);
+            if (user != void(0) && bcrypt.compareSync(req.body.password, user.password)) {
                 const token = createToken({
                     id: user._id,
                     username: user.username
@@ -50,7 +54,8 @@ export default function (app) {
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send({message: "Error Error Alarm !!! Danger Вопасносте!"});
+            console.log(config);
+            res.status(500).send({message: "Error ! Can not login"});
         }
     });
     app.post('/register', async (req, res) => {
@@ -61,7 +66,7 @@ export default function (app) {
             }
             user = await UsersModel.create({
                 username: req.body.username,
-                password: req.body.passport
+                password: req.body.password
             });
             const token = createToken({
                 id: user._id,
@@ -77,10 +82,8 @@ export default function (app) {
         }
     });
 
-    app.post('/logout', async (req, res) => {
+    app.post('/logout', (req, res) => {
         res.clearCookie('token');
         res.status(200).send({ message: "Logout success" })
     })
 };
-
-// export default router;

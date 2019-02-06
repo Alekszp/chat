@@ -61,6 +61,8 @@ _mongoose2.default.set('debug', true);
 _mongoose2.default.connect('mongodb://localhost:27017/chat', { useNewUrlParser: true });
 _mongoose2.default.Promise = _bluebird2.default;
 
+_mongoose2.default.set('debug', true);
+
 var app = (0, _express2.default)();
 var server = _http2.default.Server(app);
 var io = (0, _socket2.default)(server, {

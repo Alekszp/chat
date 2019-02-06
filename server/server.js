@@ -23,6 +23,8 @@ mongoose.set('debug', true);
 mongoose.connect('mongodb://localhost:27017/chat', { useNewUrlParser: true });
 mongoose.Promise = Promise;
 
+mongoose.set('debug', true)
+
 
 const app = express();
 const server = http.Server(app);
